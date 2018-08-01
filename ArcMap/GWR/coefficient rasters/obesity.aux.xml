@@ -1,0 +1,6 @@
+<PAMDataset>
+  <SRS>PROJCS[&quot;Lambert_Azimuthal_Equal_Area&quot;,GEOGCS[&quot;GCS_unnamed ellipse&quot;,DATUM[&quot;unknown&quot;,SPHEROID[&quot;Unknown&quot;,6370997.0,0.0]],PRIMEM[&quot;Greenwich&quot;,0.0],UNIT[&quot;Degree&quot;,0.0174532925199433]],PROJECTION[&quot;Lambert_Azimuthal_Equal_Area&quot;],PARAMETER[&quot;false_easting&quot;,0.0],PARAMETER[&quot;false_northing&quot;,0.0],PARAMETER[&quot;longitude_of_center&quot;,-100.0],PARAMETER[&quot;latitude_of_center&quot;,45.0],UNIT[&quot;Meter&quot;,1.0]]</SRS>
+  <PAMRasterBand band="1">
+    <Description>obesity</Description>
+  </PAMRasterBand>
+</PAMDataset>

@@ -1,0 +1,325 @@
+---
+title: " "
+output: github_document
+---
+
+# Exploring diabetes indicators across the US
+## A county-level analysis  
+
+*WRITE UP IN PROGRESS* 
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(
+  fig.path = "README_figs/README-",
+  message = FALSE,
+  warning = FALSE)
+
+Sys.getenv("CENSUS_API_KEY")
+
+library(tidycensus)
+library(tidyverse)
+library(viridis)
+library(sf)
+library(tigris)
+library(psych)
+library(readxl)
+library(scales)
+library(cowplot)
+library(jtools)
+library(sjPlot)
+
+options(tigris_class = "sf", tigris_use_cache = TRUE)
+
+results <-  st_read("~/Desktop/DataProjects/ND and Diabetes/ArcMap/GWR/Output/GWR_RESULTS.shp")
+res.HS1 <-  st_read("~/Desktop/DataProjects/ND and Diabetes/ArcMap/GWR/residuals/residual_hotspot.shp")
+res.HS2 <-  st_read("~/Desktop/DataProjects/ND and Diabetes/ArcMap/GWR/residuals/residual_hotspotZOI.shp")### local R2 map 
+```
+
+## County level deprivation index
+
+Details about the index can be found here: https://github.com/iecastro/deprivation-index.  In short, estimates are collected from the American Community Survey and a principal component analysis extracts a deprivation score for each observation.  
+
+Deprivation index for this project was calculated using 5-year ACS estimates from 2013, at the county-level.  Higher index scores represent higher area deprivation relative to all other counties in the US.
+
+
+`````````{r, echo = FALSE} 
+vars <- c("B17001_002", "B17001_001", "B06009_002" , "B06009_001",
+          "B09008_011", "B09008_001","B08124_002", "B08124_001", "B25014_005", 
+          "B25014_006",  "B25014_007","B25014_011", "B25014_012", "B25014_013",  
+          "B25014_001", "B19058_002", "B19058_001","C23002C_021", "C23002D_008", 
+          "C23002C_017", "C23002D_003","B19001_002", "B19001_003", "B19001_004", 
+          "B19001_005", "B19001_006", "B19001_001")
+
+acs_us <- get_acs(geography = "county", variables = vars, year=2013, 
+                  output = "wide") %>%
+  mutate(pct_poverty = B17001_002E/B17001_001E,
+         pct_noHS = B06009_002E / B06009_001E,
+         pct_FHH = B09008_011E / B09008_001E,
+         pct_mgmt = B08124_002E /  B08124_001E, 
+         pct_crowd =  (B25014_005E +B25014_006E+ B25014_007E + 
+                         B25014_011E + B25014_012E + B25014_013E) / B25014_001E,
+         pct_pubassist = B19058_002E/B19058_001E,
+         pct_unempl = (C23002C_021E + C23002D_008E)  / (C23002C_017E + C23002D_003E),
+         pct_under30K =( B19001_002E+B19001_003E+B19001_004E+B19001_005E +
+                           B19001_006E) / B19001_001E)
+
+## select transformed variables
+values  <-  acs_us %>% select(pct_poverty,pct_noHS,pct_FHH,pct_mgmt,pct_crowd,
+                              pct_pubassist, pct_unempl,pct_under30K) %>% as.matrix()
+values[is.nan(values)] <- 0
+## PCA
+ND <- principal(values,nfactors = 1)          
+NDI_us <- cbind(acs_us,ND$scores) 
+```
+
+```{r, echo = FALSE}
+NDI_us <- NDI_us %>% select(NAME,GEOID,PC1) %>% 
+  separate(NAME, into = c("County","State"), sep = ",")
+
+US_counties <- get_acs(geography = "county", variables = c("B01001_001"), 
+                       output = "wide", geometry = TRUE, shift_geo = TRUE)
+
+MapUS <- geo_join(US_counties,NDI_us, by_sp = "GEOID", by_df = "GEOID")
+
+states <- get_acs(geography = "state", variables = c("B01001_001"), 
+                  output = "wide", geometry = TRUE, shift_geo = TRUE)
+```
+
+```{r, echo=FALSE, fig.height= 8, fig.width=10}
+### Map US county deprivation
+ggplot() + geom_sf(data = MapUS, aes(fill = PC1)) +
+  geom_sf(data=states,fill = NA,color = "#ffffff", size=.5)+
+  theme_minimal() + theme(axis.text = element_blank(), legend.position = "bottom") +
+  scale_fill_viridis_c(option = "inferno") +
+  labs(fill = "Index", caption = "Data: US Census 5-year ACS estimates, 2013")+
+  ggtitle(" ", subtitle = "County-level Deprivation")
+
+```
+
+## Diabetes Indicators
+
+National data on diabetes indciators are available from the CDC (https://www.cdc.gov/diabetes/data/countydata/countydataindicators.html). Indicator estiamtes are the most up to date as of 2013 and available at the county-level only. Indicators (age-adjusted) are: 1. prevalence of diagnosed diabetes, 2. prevalence of obesity, and 3. prevalence of leisure-time physical inactivity, hereafter just inactivity. The spatial distribution of diabetes prevalence in 2013 (below) parallels that of 2007, which led to the recognition of a "diabetes belt" in southern states (https://www.scientificamerican.com/article/diabetes-belt/,https://www.ncbi.nlm.nih.gov/pubmed/21406277).  
+
+
+```{r, echo = FALSE}
+
+#### Get diabetes indicators
+Diab_prev <- read_xlsx("~/Desktop/DataProjects/ND and Diabetes/Data/DM_PREV_ALL_STATES2013.xlsx")%>%
+  select(State,County ,FIPS = `FIPS Codes`, DiabPrev = `age-adjusted percent`)
+  
+Obes_prev <- read_xlsx("~/Desktop/DataProjects/ND and Diabetes/Data/OB_PREV_ALL_STATES2013.xlsx")%>%
+   select(State,County ,FIPS = `FIPS Codes`, ObPrev = `age-adjusted percent`)
+
+Inact_prev <- read_xlsx("~/Desktop/DataProjects/ND and Diabetes/Data/LTPIA_PREV_ALL_STATES2013.xlsx") %>%
+  select(State,County,FIPS = `FIPS Codes`, InactPrev = `age-adjusted percent`)
+
+### merge datasets
+
+merge1 <- merge(Diab_prev,Obes_prev, by.x = c("County", "State"), by.y = c("County", "State"))
+merge2 <- merge(merge1,Inact_prev,by.x = c("County", "State"), by.y = c("County", "State")) %>%
+  select(-c(FIPS.y))
+data <- merge(NDI_us,merge2,by.x = "GEOID", by.y = "FIPS.x", all.x=TRUE) %>%
+  select(-c("FIPS")) 
+
+## merge data to spatial attributes
+MapDiab <- geo_join(US_counties,data, by_sp = "GEOID", by_df = "GEOID") 
+```
+
+```{r, echo=FALSE, fig.height= 8, fig.width=10}
+### map diabetes prevalence 
+### map diabetes prevalence 
+ggplot() + geom_sf(data=MapDiab, aes(fill = as.numeric(DiabPrev)/100)) +
+  geom_sf(data=states,fill = NA,color = "#ffffff", size=.5) +
+  scale_fill_viridis_c(option = "magma",labels = scales::percent) +
+  theme_minimal() + theme(axis.text = element_blank(), legend.position = "bottom") +
+  labs(fill = "Prevalence ", caption = "Data: CDC County-level Indicators, 2013")+
+  ggtitle(" ", subtitle = "County-level, age-adjusted prevalence of diagnosed Diabetes in adults")
+```
+
+## Data Analysis
+
+Obesity and physical inactivity are well-known risk factors for developing diabetes.  Therefore, in order to assess whether area deprivation is associated with diabetes prevalence, independent of obesity and inactivity, a blocked multiple regression was fitted.  First we estimated the effects of obesity and inactivity; afterwards, deprivation variable was introduced.
+
+```{r, echo = FALSE}
+#### data cleaning 
+data <- data %>% select(-c(State.x,County.y)) %>% 
+  as.tibble()
+
+data$DiabPrev <- as.numeric(data$DiabPrev)
+data$ObPrev <- as.numeric(data$ObPrev)
+data$InactPrev <- as.numeric(data$InactPrev)
+
+## blocked model 
+lm1 <- lm(DiabPrev~ObPrev+InactPrev, data = data)
+lm2 <- lm(DiabPrev~ObPrev+InactPrev + PC1, data = data)
+
+```
+
+### Regression results
+
+```{r, echo = FALSE}
+## compare models
+sjt.lm(lm1,lm2,depvar.labels = c("Block 1","Block 2"),
+       pred.labels = c("Obesity Prevelence", "Inactivity Prevalence","Area Deprivation"),
+       show.r2 = TRUE, show.fstat = TRUE, show.ci = TRUE,show.se = TRUE)
+```
+
+
+
+Increases in county-level deprivation predict increases in diabetes prevalence.
+
+```{r, echo = FALSE}
+## plots 
+ggplot(data, aes(PC1,DiabPrev)) + geom_point() +
+  stat_smooth() + theme_classic() +
+  labs(x = "County-level Deprivation Index", y = "Diagnosed Diabetes Prevalence (%)")
+```
+
+
+It's possible that area deprivation is a moderator in the association between obesity and diabetes.
+
+```{r, echo = FALSE}
+ggplot(data, aes(PC1,DiabPrev)) + geom_point(aes(color = ObPrev/100)) +
+  stat_smooth() + theme_classic() +
+  labs(x = "County-level Deprivation Index", y = "Diagnosed Diabetes Prevalence (%)",
+       color = "Obesity") +
+  scale_color_viridis_c(option="inferno", direction = -1, labels = scales::percent)
+```
+
+### Interaction Term
+
+Results summary 
+
+```{r, echo=FALSE}
+## interaction model
+int <- lm(DiabPrev~InactPrev+ObPrev*PC1, data = data)
+summ(int,center = TRUE)
+```
+
+
+```{r, echo=FALSE}
+interact_plot(int, pred = ObPrev, modx = PC1,
+              interval = TRUE, int.type = "confidence", 
+              x.label = "Obesity Prevalence (%)", y.label = "Diagnosed Diabetes Prevalence (%)") +
+             theme_apa(legend.pos = "topleft") + 
+              ggtitle("County-level Deprivation", 
+              subtitle = "moderates the relationship between obesity and diabetes")
+```
+
+
+## Spatial Analysis
+
+All spatial analysis was conducted in ArcMap (version 10.2). A geographically weighted regression (GWR) was fitted with an adapative kernel and AICCc bandwith parameter. 
+
+GWR estimates local models across an area by allowing the relationship between variables to vary by location. Inactivity variable was excluded from this model due to multicollinearity with obesity variable. 
+
+### Results 
+
+The GWR used 404 neighbors for each local estimation and accounted for 80% of variability in diabetes outcome. Local models accounted between 20% to 77% of variability in the outcome.
+
+GWR summary:
+
+ Neighbors           : 404  
+ ResidualSquares     : 3022.5957759565522  
+ EffectiveNumber     : 83.492913855248489   
+ Sigma               : 0.99411194002147207  
+ AICc                : 8921.5582814951449  
+ R2                  : 0.80040748447829668  
+ R2Adjusted          : 0.79502414949644495  
+
+
+
+```{r, echo=FALSE, fig.height= 9, fig.width=11}
+ ggplot() + geom_sf(data=results, aes(fill = LocalR2)) +
+  geom_sf(data=states,fill = NA,color = "#ffffff", size=.5)+
+  theme_minimal() + theme(axis.text = element_blank()) +
+  scale_fill_distiller(type = "seq", direction = 1, labels = scales::percent) +
+  labs(fill="Explained Variance") +
+  ggtitle("Spatial variability in goodness-of-fit", subtitle = "determined by Local R-squared values")
+```
+
+
+### Spatial variability in the effect of each variable
+
+```{r, echo=FALSE, fig.height= 14, fig.width=18}
+##### coefficient maps
+### obesity coefficient
+
+A <- ggplot() + geom_sf(data=results, aes(fill = C1_obesity)) +
+  geom_sf(data=states,fill = NA,color = "#ffffff", size=.5)+
+  theme_minimal() + theme(axis.text = element_blank()) +
+  scale_fill_viridis_c(option = "cividis", direction = -1) +
+  labs(fill = expression(paste("Estimate", "(",beta,")"))) +
+  ggtitle("Effect of Obesity on Diabetes Prevalence")
+
+B <- ggplot() + geom_sf(data=results, aes(fill = StdErrC1_o)) +
+  geom_sf(data=states,fill = NA,color = "#ffffff", size=.5)+
+  theme_minimal() + theme(axis.text = element_blank()) +
+  scale_fill_viridis_c(option = "magma", direction = 1) +
+  labs(fill = "Std. Error") +
+  ggtitle(" ", subtitle = "Precision of estimates for obesity variable")
+  
+### ND coefficient
+C <- ggplot() + geom_sf(data=results, aes(fill =C2_PC1)) +
+  geom_sf(data=states,fill = NA,color = "#ffffff", size=.5)+
+  theme_minimal() + theme(axis.text = element_blank()) +
+  scale_fill_viridis_c(option = "cividis", direction = -1) +
+  labs(fill = expression(paste("Estimate", "(",beta,")"))) +
+  ggtitle("Effect of Deprivation on Diabetes Prevalence")
+
+D <- ggplot() + geom_sf(data=results, aes(fill = StdErrC2_P)) +
+  geom_sf(data=states,fill = NA,color = "#ffffff", size=.5)+
+  theme_minimal() + theme(axis.text = element_blank()) +
+  scale_fill_viridis_c(option = "magma", direction = 1) +
+  labs(fill = "Std. Error") +
+  ggtitle(" ", subtitle = "Precision of estimates for deprivation variable")
+
+### grid
+cowplot::plot_grid(A,B,C,D, ncol = 2)
+```
+
+
+### Standardized residuals from GWR model
+
+
+```{r, echo=FALSE,fig.height= 9, fig.width=11}
+###### residual maps
+## std residuals 
+
+ggplot() + geom_sf(data=results, aes(fill = StdResid)) +
+  geom_sf(data=states,fill = NA,color = "#000000", size=.5)+
+  theme_minimal() + theme(axis.text = element_blank()) +
+  scale_fill_distiller(type = "div", palette = "RdYlBu") 
+```
+
+
+```{r, echo=FALSE, fig.height= 12, fig.width=16}
+## hot spot inversed distance
+HS1 <- ggplot() + geom_sf(data=res.HS1, aes(fill = Gi_Bin)) +
+  geom_sf(data=states,fill = NA,color = "#000000", size=.5)+
+  theme_minimal() + theme(axis.text = element_blank()) +
+  scale_fill_distiller(type = "div", palette = "RdYlBu",breaks = c(-3,-2,0,2,3), 
+                       labels =  c("99%","95%", "Not Sig.", "95%", "99%"))  + 
+  labs(fill = "Confidence") +
+  ggtitle("Hot Spot analysis of residual values", 
+          subtitle = "with an Inverse Distance spatial relationship")
+                     
+## hot spot ZOI
+HS2 <- ggplot() + geom_sf(data=res.HS2, aes(fill = Gi_Bin)) +
+  geom_sf(data=states,fill = NA,color = "#000000", size=.5)+
+  theme_minimal() + theme(axis.text = element_blank()) +
+  scale_fill_distiller(type = "div", palette = "RdYlBu",breaks = c(-3,-2,0,2,3), 
+                       labels =  c("99%","95%", "Not Sig.", "95%", "99%"))  + 
+  labs(fill = "Confidence") +
+  ggtitle("Hot Spot analysis of residual values", 
+          subtitle = "with a Zone of Indifference spatial relationship")
+### grid 
+cowplot::plot_grid(HS1,HS2, ncol = 2)
+```
+
+
+## Limitations
+
+
+
+  

@@ -1,0 +1,11 @@
+Messages
+Executing: GeographicallyWeightedRegression MapDiab diabetes obesity;PC1 "\\hd.ad.syr.edu\02\c3964a\Documents\Desktop\GIS\US Diabetes\GWR\Output\GWR_RESULTS.shp" ADAPTIVE AICc # 30 # "\\hd.ad.syr.edu\02\c3964a\Documents\Desktop\GIS\US Diabetes\GWR\coefficient rasters" 12928.4133478507 # # #
+Start Time: Wed Aug 01 10:36:33 2018
+Neighbors           : 404
+ResidualSquares     : 3022.5957759565522
+EffectiveNumber     : 83.492913855248489
+Sigma               : 0.99411194002147207
+AICc                : 8921.5582814951449
+R2                  : 0.80040748447829668
+R2Adjusted          : 0.79502414949644495
+Succeeded at Wed Aug 01 10:37:10 2018 (Elapsed Time: 36.94 seconds)
