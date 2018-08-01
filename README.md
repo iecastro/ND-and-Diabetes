@@ -271,7 +271,7 @@ F-statistics
 </td>
 </tr>
 </table>
-Increases in county-level deprivation predict increases in diabetes prevalence.
+#### Increases in county-level deprivation predict increases in diabetes prevalence.
 
 ![](README_figs/README-unnamed-chunk-8-1.png)
 
@@ -328,15 +328,23 @@ R2Adjusted : 0.79502414949644495
 
 ![](README_figs/README-unnamed-chunk-12-1.png)
 
-### Spatial variability in the effect of each variable
+### Spatial variability of effects
 
-![](README_figs/README-unnamed-chunk-13-1.png)
+#### Obesity prevelance
+
+![](README_figs/README-unnamed-chunk-13-1.png)![](README_figs/README-unnamed-chunk-13-2.png)
+
+#### Area deprivation
+
+![](README_figs/README-unnamed-chunk-14-1.png)![](README_figs/README-unnamed-chunk-14-2.png)
 
 ### Standardized residuals from GWR model
 
-![](README_figs/README-unnamed-chunk-14-1.png)
-
 ![](README_figs/README-unnamed-chunk-15-1.png)
+
+![](README_figs/README-unnamed-chunk-16-1.png)
+
+![](README_figs/README-unnamed-chunk-17-1.png)
 
 Limitations
 -----------

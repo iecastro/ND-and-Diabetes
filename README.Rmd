@@ -166,7 +166,7 @@ sjt.lm(lm1,lm2,depvar.labels = c("Block 1","Block 2"),
 
 
 
-Increases in county-level deprivation predict increases in diabetes prevalence.
+#### Increases in county-level deprivation predict increases in diabetes prevalence.
 
 ```{r, echo = FALSE}
 ## plots 
@@ -239,43 +239,45 @@ GWR summary:
 ```
 
 
-### Spatial variability in the effect of each variable
+### Spatial variability of effects
 
-```{r, echo=FALSE, fig.height= 14, fig.width=18}
-##### coefficient maps
-### obesity coefficient
+#### Obesity prevelance
 
-A <- ggplot() + geom_sf(data=results, aes(fill = C1_obesity)) +
+```{r, echo=FALSE, fig.height= 9, fig.width=11}
+
+ggplot() + geom_sf(data=results, aes(fill = C1_obesity)) +
   geom_sf(data=states,fill = NA,color = "#ffffff", size=.5)+
   theme_minimal() + theme(axis.text = element_blank()) +
   scale_fill_viridis_c(option = "cividis", direction = -1) +
   labs(fill = expression(paste("Estimate", "(",beta,")"))) +
-  ggtitle("Effect of Obesity on Diabetes Prevalence")
+  ggtitle("Effect of obesity on diabetes prevalence")
 
-B <- ggplot() + geom_sf(data=results, aes(fill = StdErrC1_o)) +
+ggplot() + geom_sf(data=results, aes(fill = StdErrC1_o)) +
   geom_sf(data=states,fill = NA,color = "#ffffff", size=.5)+
   theme_minimal() + theme(axis.text = element_blank()) +
   scale_fill_viridis_c(option = "magma", direction = 1) +
   labs(fill = "Std. Error") +
-  ggtitle(" ", subtitle = "Precision of estimates for obesity variable")
-  
-### ND coefficient
-C <- ggplot() + geom_sf(data=results, aes(fill =C2_PC1)) +
+  ggtitle("", subtitle="Precision of estimates")
+```
+
+#### Area deprivation
+
+```{r, echo=FALSE, fig.height= 9, fig.width=11}
+
+ggplot() + geom_sf(data=results, aes(fill =C2_PC1)) +
   geom_sf(data=states,fill = NA,color = "#ffffff", size=.5)+
   theme_minimal() + theme(axis.text = element_blank()) +
   scale_fill_viridis_c(option = "cividis", direction = -1) +
   labs(fill = expression(paste("Estimate", "(",beta,")"))) +
-  ggtitle("Effect of Deprivation on Diabetes Prevalence")
+  ggtitle("Effect of deprivation on diabetes prevalence")
 
-D <- ggplot() + geom_sf(data=results, aes(fill = StdErrC2_P)) +
+ggplot() + geom_sf(data=results, aes(fill = StdErrC2_P)) +
   geom_sf(data=states,fill = NA,color = "#ffffff", size=.5)+
   theme_minimal() + theme(axis.text = element_blank()) +
   scale_fill_viridis_c(option = "magma", direction = 1) +
   labs(fill = "Std. Error") +
-  ggtitle(" ", subtitle = "Precision of estimates for deprivation variable")
+  ggtitle("", subtitle="Precision of estimates")
 
-### grid
-cowplot::plot_grid(A,B,C,D, ncol = 2)
 ```
 
 
@@ -293,19 +295,19 @@ ggplot() + geom_sf(data=results, aes(fill = StdResid)) +
 ```
 
 
-```{r, echo=FALSE, fig.height= 12, fig.width=16}
+```{r, echo=FALSE, fig.height= 9, fig.width=11}
 ## hot spot inversed distance
-HS1 <- ggplot() + geom_sf(data=res.HS1, aes(fill = Gi_Bin)) +
+ggplot() + geom_sf(data=res.HS1, aes(fill = Gi_Bin)) +
   geom_sf(data=states,fill = NA,color = "#000000", size=.5)+
   theme_minimal() + theme(axis.text = element_blank()) +
-  scale_fill_distiller(type = "div", palette = "RdYlBu",breaks = c(-3,-2,0,2,3), 
-                       labels =  c("99%","95%", "Not Sig.", "95%", "99%"))  + 
+  scale_fill_distiller(type = "div", palette = "RdYlBu",breaks = c(-3,-2,0,2,3), labels =  c("99%","95%", "Not Sig.", "95%", "99%")) + 
   labs(fill = "Confidence") +
-  ggtitle("Hot Spot analysis of residual values", 
-          subtitle = "with an Inverse Distance spatial relationship")
-                     
+  ggtitle("Hot Spot analysis of residual values", subtitle = "with an Inverse Distance spatial relationship")
+```
+
+```{r, echo=FALSE, fig.height= 9, fig.width=11}                     
 ## hot spot ZOI
-HS2 <- ggplot() + geom_sf(data=res.HS2, aes(fill = Gi_Bin)) +
+ggplot() + geom_sf(data=res.HS2, aes(fill = Gi_Bin)) +
   geom_sf(data=states,fill = NA,color = "#000000", size=.5)+
   theme_minimal() + theme(axis.text = element_blank()) +
   scale_fill_distiller(type = "div", palette = "RdYlBu",breaks = c(-3,-2,0,2,3), 
@@ -313,8 +315,6 @@ HS2 <- ggplot() + geom_sf(data=res.HS2, aes(fill = Gi_Bin)) +
   labs(fill = "Confidence") +
   ggtitle("Hot Spot analysis of residual values", 
           subtitle = "with a Zone of Indifference spatial relationship")
-### grid 
-cowplot::plot_grid(HS1,HS2, ncol = 2)
 ```
 
 
