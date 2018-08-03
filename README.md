@@ -5,7 +5,6 @@ Exploring diabetes indicators across the US
 A county-level analysis
 -----------------------
 
-*WRITE UP IN PROGRESS*
 
 County level deprivation index
 ------------------------------
@@ -26,7 +25,7 @@ National data on diabetes indciators are available from the CDC (<https://www.cd
 Data Analysis
 -------------
 
-Obesity and physical inactivity are well-known risk factors for developing diabetes. Therefore, in order to assess whether area deprivation is associated with diabetes prevalence, independent of obesity and inactivity, a blocked multiple regression was fitted. First we estimated the effects of obesity and inactivity; afterwards, deprivation variable was introduced.
+Obesity and physical inactivity are well-known risk factors for developing diabetes. Therefore, in order to assess whether area deprivation is associated with diabetes prevalence, independent of obesity and inactivity, a blocked multiple regression was fitted. First we estimated the effects of obesity and inactivity; and then, deprivation variable was introduced.
 
 ### Regression results
 
@@ -271,7 +270,7 @@ F-statistics
 </td>
 </tr>
 </table>
-#### Increases in county-level deprivation predict increases in diabetes prevalence.
+### Increases in county-level deprivation predict increases in diabetes prevalence.
 
 ![](README_figs/README-unnamed-chunk-8-1.png)
 
@@ -318,13 +317,13 @@ The GWR used 404 neighbors for each local estimation and accounted for 80% of va
 
 GWR summary:
 
-Neighbors : 404
-ResidualSquares : 3022.5957759565522
-EffectiveNumber : 83.492913855248489
-Sigma : 0.99411194002147207
-AICc : 8921.5582814951449
-R2 : 0.80040748447829668
-R2Adjusted : 0.79502414949644495
+Neighbors : 404  
+ResidualSquares : 3022.5957759565522  
+EffectiveNumber : 83.492913855248489  
+Sigma : 0.99411194002147207  
+AICc : 8921.5582814951449  
+R2 : 0.80040748447829668  
+R2Adjusted : 0.79502414949644495  
 
 ![](README_figs/README-unnamed-chunk-12-1.png)
 
