@@ -6,7 +6,6 @@ output: github_document
 # Exploring diabetes indicators across the US
 ## A county-level analysis  
 
-*WRITE UP IN PROGRESS* 
 
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(
