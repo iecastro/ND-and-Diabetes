@@ -5,6 +5,7 @@ Exploring diabetes indicators across the US
 A county-level analysis
 -----------------------
 
+*WRITE UP IN PROGRESS*
 
 County level deprivation index
 ------------------------------
@@ -25,258 +26,246 @@ National data on diabetes indciators are available from the CDC (<https://www.cd
 Data Analysis
 -------------
 
-Obesity and physical inactivity are well-known risk factors for developing diabetes. Therefore, in order to assess whether area deprivation is associated with diabetes prevalence, independent of obesity and inactivity, a blocked multiple regression was fitted. First we estimated the effects of obesity and inactivity; and then, deprivation variable was introduced.
+Obesity and physical inactivity are well-known risk factors for developing diabetes. Therefore, in order to assess whether area deprivation is associated with diabetes prevalence, independent of obesity and inactivity, a blocked multiple regression was fitted. First we estimated the effects of obesity and inactivity; afterwards, deprivation variable was introduced.
 
 ### Regression results
 
-<table style="border-collapse:collapse; border:none;border-bottom:double;">
-<td style="padding:0.2cm; border-top:double;">
- 
-</td>
-<td style="border-bottom:1px solid; padding-left:0.5em; padding-right:0.5em; border-top:double;">
- 
-</td>
-<td style="padding:0.2cm; text-align:center; border-bottom:1px solid; border-top:double;" colspan="4">
-Block 1
-</td>
-<td style="border-bottom:1px solid; padding-left:0.5em; padding-right:0.5em; border-top:double;">
- 
-</td>
-<td style="padding:0.2cm; text-align:center; border-bottom:1px solid; border-top:double;" colspan="4">
-Block 2
+``` r
+library(stargazer, quietly = TRUE)
+
+stargazer(lm1,lm2, type ="html")
+```
+
+<table style="text-align:center">
+<tr>
+<td colspan="3" style="border-bottom: 1px solid black">
 </td>
 </tr>
 <tr>
-<td style="padding:0.2cm; font-style:italic;">
- 
+<td style="text-align:left">
 </td>
-<td style="padding-left:0.5em; padding-right:0.5em; font-style:italic;">
- 
-</td>
-<td style="padding:0.2cm; text-align:center; font-style:italic; ">
-B
-</td>
-<td style="padding:0.2cm; text-align:center; font-style:italic; ">
-CI
-</td>
-<td style="padding:0.2cm; text-align:center; font-style:italic; ">
-std. Error
-</td>
-<td style="padding:0.2cm; text-align:center; font-style:italic; ">
-p
-</td>
-<td style="padding-left:0.5em; padding-right:0.5em; font-style:italic;">
- 
-</td>
-<td style="padding:0.2cm; text-align:center; font-style:italic; ">
-B
-</td>
-<td style="padding:0.2cm; text-align:center; font-style:italic; ">
-CI
-</td>
-<td style="padding:0.2cm; text-align:center; font-style:italic; ">
-std. Error
-</td>
-<td style="padding:0.2cm; text-align:center; font-style:italic; ">
-p
+<td colspan="2">
+<em>Dependent variable:</em>
 </td>
 </tr>
 <tr>
-<td style="padding:0.2cm; border-top:1px solid; text-align:left;">
-(Intercept)
+<td>
 </td>
-<td style="padding-left:0.5em; padding-right:0.5em; border-top:1px solid; ">
- 
-</td>
-<td style="padding:0.2cm; text-align:center; border-top:1px solid; ">
--0.91
-</td>
-<td style="padding:0.2cm; text-align:center; border-top:1px solid; ">
--1.24 – -0.59
-</td>
-<td style="padding:0.2cm; text-align:center; border-top:1px solid; ">
-0.17
-</td>
-<td style="padding:0.2cm; text-align:center; border-top:1px solid; ">
-&lt;.001
-</td>
-<td style="padding-left:0.5em; padding-right:0.5em; border-top:1px solid; ">
- 
-</td>
-<td style="padding:0.2cm; text-align:center; border-top:1px solid; ">
-1.31
-</td>
-<td style="padding:0.2cm; text-align:center; border-top:1px solid; ">
-0.96 – 1.66
-</td>
-<td style="padding:0.2cm; text-align:center; border-top:1px solid; ">
-0.18
-</td>
-<td style="padding:0.2cm; text-align:center; border-top:1px solid; ">
-&lt;.001
+<td colspan="2" style="border-bottom: 1px solid black">
 </td>
 </tr>
 <tr>
-<td style="padding:0.2cm; text-align:left;">
-Obesity Prevelence
+<td style="text-align:left">
 </td>
-<td style="padding-left:0.5em; padding-right:0.5em;">
- 
-</td>
-<td style="padding:0.2cm; text-align:center; ">
-0.19
-</td>
-<td style="padding:0.2cm; text-align:center; ">
-0.17 – 0.20
-</td>
-<td style="padding:0.2cm; text-align:center; ">
-0.01
-</td>
-<td style="padding:0.2cm; text-align:center; ">
-&lt;.001
-</td>
-<td style="padding-left:0.5em; padding-right:0.5em;">
- 
-</td>
-<td style="padding:0.2cm; text-align:center; ">
-0.17
-</td>
-<td style="padding:0.2cm; text-align:center; ">
-0.15 – 0.18
-</td>
-<td style="padding:0.2cm; text-align:center; ">
-0.01
-</td>
-<td style="padding:0.2cm; text-align:center; ">
-&lt;.001
+<td colspan="2">
+DiabPrev
 </td>
 </tr>
 <tr>
-<td style="padding:0.2cm; text-align:left;">
-Inactivity Prevalence
+<td style="text-align:left">
 </td>
-<td style="padding-left:0.5em; padding-right:0.5em;">
- 
+<td>
+(1)
 </td>
-<td style="padding:0.2cm; text-align:center; ">
-0.19
-</td>
-<td style="padding:0.2cm; text-align:center; ">
-0.18 – 0.21
-</td>
-<td style="padding:0.2cm; text-align:center; ">
-0.01
-</td>
-<td style="padding:0.2cm; text-align:center; ">
-&lt;.001
-</td>
-<td style="padding-left:0.5em; padding-right:0.5em;">
- 
-</td>
-<td style="padding:0.2cm; text-align:center; ">
-0.13
-</td>
-<td style="padding:0.2cm; text-align:center; ">
-0.12 – 0.15
-</td>
-<td style="padding:0.2cm; text-align:center; ">
-0.01
-</td>
-<td style="padding:0.2cm; text-align:center; ">
-&lt;.001
+<td>
+(2)
 </td>
 </tr>
 <tr>
-<td style="padding:0.2cm; text-align:left;">
-Area Deprivation
-</td>
-<td style="padding-left:0.5em; padding-right:0.5em;">
- 
-</td>
-<td style="padding:0.2cm; text-align:center; ">
-</td>
-<td style="padding:0.2cm; text-align:center; ">
- 
-</td>
-<td style="padding:0.2cm; text-align:center; ">
-</td>
-<td style="padding:0.2cm; text-align:center; ">
-</td>
-<td style="padding-left:0.5em; padding-right:0.5em;">
- 
-</td>
-<td style="padding:0.2cm; text-align:center; ">
-0.74
-</td>
-<td style="padding:0.2cm; text-align:center; ">
-0.68 – 0.80
-</td>
-<td style="padding:0.2cm; text-align:center; ">
-0.03
-</td>
-<td style="padding:0.2cm; text-align:center; ">
-&lt;.001
+<td colspan="3" style="border-bottom: 1px solid black">
 </td>
 </tr>
 <tr>
-<td style="padding:0.2cm; padding-top:0.1cm; padding-bottom:0.1cm; text-align:left; border-top:1px solid;">
+<td style="text-align:left">
+ObPrev
+</td>
+<td>
+0.188<sup>\*\*\*</sup>
+</td>
+<td>
+0.165<sup>\*\*\*</sup>
+</td>
+</tr>
+<tr>
+<td style="text-align:left">
+</td>
+<td>
+(0.008)
+</td>
+<td>
+(0.007)
+</td>
+</tr>
+<tr>
+<td style="text-align:left">
+</td>
+<td>
+</td>
+<td>
+</td>
+</tr>
+<tr>
+<td style="text-align:left">
+InactPrev
+</td>
+<td>
+0.192<sup>\*\*\*</sup>
+</td>
+<td>
+0.132<sup>\*\*\*</sup>
+</td>
+</tr>
+<tr>
+<td style="text-align:left">
+</td>
+<td>
+(0.007)
+</td>
+<td>
+(0.007)
+</td>
+</tr>
+<tr>
+<td style="text-align:left">
+</td>
+<td>
+</td>
+<td>
+</td>
+</tr>
+<tr>
+<td style="text-align:left">
+PC1
+</td>
+<td>
+</td>
+<td>
+0.740<sup>\*\*\*</sup>
+</td>
+</tr>
+<tr>
+<td style="text-align:left">
+</td>
+<td>
+</td>
+<td>
+(0.031)
+</td>
+</tr>
+<tr>
+<td style="text-align:left">
+</td>
+<td>
+</td>
+<td>
+</td>
+</tr>
+<tr>
+<td style="text-align:left">
+Constant
+</td>
+<td>
+-0.912<sup>\*\*\*</sup>
+</td>
+<td>
+1.311<sup>\*\*\*</sup>
+</td>
+</tr>
+<tr>
+<td style="text-align:left">
+</td>
+<td>
+(0.166)
+</td>
+<td>
+(0.180)
+</td>
+</tr>
+<tr>
+<td style="text-align:left">
+</td>
+<td>
+</td>
+<td>
+</td>
+</tr>
+<tr>
+<td colspan="3" style="border-bottom: 1px solid black">
+</td>
+</tr>
+<tr>
+<td style="text-align:left">
 Observations
 </td>
-<td style="padding-left:0.5em; padding-right:0.5em; border-top:1px solid;">
- 
+<td>
+3,142
 </td>
-<td style="padding:0.2cm; padding-top:0.1cm; padding-bottom:0.1cm; text-align:center; border-top:1px solid;" colspan="4">
-3142
-</td>
-<td style="padding-left:0.5em; padding-right:0.5em; border-top:1px solid;">
- 
-</td>
-<td style="padding:0.2cm; padding-top:0.1cm; padding-bottom:0.1cm; text-align:center; border-top:1px solid;" colspan="4">
-3142
+<td>
+3,142
 </td>
 </tr>
 <tr>
-<td style="padding:0.2cm; text-align:left; padding-top:0.1cm; padding-bottom:0.1cm;">
-R<sup>2</sup> / adj. R<sup>2</sup>
+<td style="text-align:left">
+R<sup>2</sup>
 </td>
-<td style="padding-left:0.5em; padding-right:0.5em;">
- 
+<td>
+0.601
 </td>
-<td style="padding:0.2cm; text-align:center; padding-top:0.1cm; padding-bottom:0.1cm;" colspan="4">
-.601 / .600
-</td>
-<td style="padding-left:0.5em; padding-right:0.5em;">
- 
-</td>
-<td style="padding:0.2cm; text-align:center; padding-top:0.1cm; padding-bottom:0.1cm;" colspan="4">
-.661 / .660
+<td>
+0.661
 </td>
 </tr>
 <tr>
-<td style="padding:0.2cm; text-align:left; padding-top:0.1cm; padding-bottom:0.1cm;">
-F-statistics
+<td style="text-align:left">
+Adjusted R<sup>2</sup>
 </td>
-<td style="padding-left:0.5em; padding-right:0.5em;">
- 
+<td>
+0.600
 </td>
-<td style="padding:0.2cm; text-align:center; padding-top:0.1cm; padding-bottom:0.1cm;" colspan="4">
-2361.260\*\*\*
+<td>
+0.660
 </td>
-<td style="padding-left:0.5em; padding-right:0.5em;">
- 
+</tr>
+<tr>
+<td style="text-align:left">
+Residual Std. Error
 </td>
-<td style="padding:0.2cm; text-align:center; padding-top:0.1cm; padding-bottom:0.1cm;" colspan="4">
-2035.008\*\*\*
+<td>
+1.383 (df = 3139)
+</td>
+<td>
+1.275 (df = 3138)
+</td>
+</tr>
+<tr>
+<td style="text-align:left">
+F Statistic
+</td>
+<td>
+2,361.260<sup>\*\*\*</sup> (df = 2; 3139)
+</td>
+<td>
+2,035.008<sup>\*\*\*</sup> (df = 3; 3138)
+</td>
+</tr>
+<tr>
+<td colspan="3" style="border-bottom: 1px solid black">
+</td>
+</tr>
+<tr>
+<td style="text-align:left">
+<em>Note:</em>
+</td>
+<td colspan="2" style="text-align:right">
+<sup>*</sup>p&lt;0.1; <sup>**</sup>p&lt;0.05; <sup>***</sup>p&lt;0.01
 </td>
 </tr>
 </table>
 ### Increases in county-level deprivation predict increases in diabetes prevalence.
 
+![](README_figs/README-unnamed-chunk-7-1.png)
+
 ![](README_figs/README-unnamed-chunk-8-1.png)
-
-It's possible that area deprivation is a moderator in the association between obesity and diabetes.
-
-![](README_figs/README-unnamed-chunk-9-1.png)
 
 ### Interaction Term
 
@@ -302,12 +291,37 @@ Results summary
     ## 
     ## Continuous predictors are mean-centered.
 
-![](README_figs/README-unnamed-chunk-11-1.png)
+![](README_figs/README-unnamed-chunk-10-1.png)
 
-Spatial Analysis
-----------------
+Spatial Auto-correlation of county prevalence
+---------------------------------------------
 
-All spatial analysis was conducted in ArcMap (version 10.2). A geographically weighted regression (GWR) was fitted with an adapative kernel and AICCc bandwith parameter.
+    ## 
+    ##  Moran I test under randomisation
+    ## 
+    ## data:  MapSP$diabetes  
+    ## weights: nb2listw(neighbors) 
+    ## omitted: 1543, 3118   
+    ## 
+    ## Moran I statistic standard deviate = 67.205, p-value < 2.2e-16
+    ## alternative hypothesis: greater
+    ## sample estimates:
+    ## Moran I statistic       Expectation          Variance 
+    ##      0.6962110037     -0.0003185728      0.0001074177
+
+``` r
+MapSP$diabetes <- ifelse(is.na(MapSP$diabetes), 0, MapSP$diabetes)
+moran.plot(MapSP$diabetes,nb2listw(neighbors), zero.policy = FALSE, 
+           labels = FALSE,main=c(" "),
+           xlab="Diabetes Prevalence",ylab = "Spatially Lagged Diabetes Prevalence")
+```
+
+![](README_figs/README-unnamed-chunk-12-1.png)
+
+Spatial Regression
+------------------
+
+A geographically weighted regression (GWR) was fitted with an adapative kernel and AICCc bandwith parameter - conducted in ArcMap (version 10.2).
 
 GWR estimates local models across an area by allowing the relationship between variables to vary by location. Inactivity variable was excluded from this model due to multicollinearity with obesity variable.
 
@@ -317,33 +331,36 @@ The GWR used 404 neighbors for each local estimation and accounted for 80% of va
 
 GWR summary:
 
-Neighbors : 404  
-ResidualSquares : 3022.5957759565522  
-EffectiveNumber : 83.492913855248489  
-Sigma : 0.99411194002147207  
-AICc : 8921.5582814951449  
-R2 : 0.80040748447829668  
-R2Adjusted : 0.79502414949644495  
+Neighbors : 404
 
-![](README_figs/README-unnamed-chunk-12-1.png)
+ResidualSquares : 3022.5957759565522
+
+EffectiveNumber : 83.492913855248489
+
+Sigma : 0.99411194002147207
+
+AICc : 8921.5582814951449
+
+R2 : 0.80040748447829668
+
+R2Adjusted : 0.79502414949644495
+
+![](README_figs/README-unnamed-chunk-13-1.png)
 
 ### Spatial variability of effects
 
 #### Obesity prevelance
 
-![](README_figs/README-unnamed-chunk-13-1.png)![](README_figs/README-unnamed-chunk-13-2.png)
+![](README_figs/README-unnamed-chunk-14-1.png)![](README_figs/README-unnamed-chunk-14-2.png)
 
 #### Area deprivation
 
-![](README_figs/README-unnamed-chunk-14-1.png)![](README_figs/README-unnamed-chunk-14-2.png)
+![](README_figs/README-unnamed-chunk-15-1.png)![](README_figs/README-unnamed-chunk-15-2.png)
 
 ### Standardized residuals from GWR model
-
-![](README_figs/README-unnamed-chunk-15-1.png)
 
 ![](README_figs/README-unnamed-chunk-16-1.png)
 
 ![](README_figs/README-unnamed-chunk-17-1.png)
 
-Limitations
------------
+![](README_figs/README-unnamed-chunk-18-1.png)
