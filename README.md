@@ -5,7 +5,6 @@ Exploring diabetes indicators across the US
 A county-level analysis
 -----------------------
 
-*WRITE UP IN PROGRESS*
 
 County level deprivation index
 ------------------------------
